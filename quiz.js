@@ -1,6 +1,6 @@
 // quiz.js
 window.onload = function() {
-    // --- Question 3: Line segment (2,6) to (3,9) ---
+    // --- Question 1: Line segment (2,6) to (3,9) ---
     const segmentCanvas = document.getElementById('segmentGraph');
     if (segmentCanvas) {
         const segCtx = segmentCanvas.getContext('2d');
@@ -22,6 +22,32 @@ window.onload = function() {
         segCtx.beginPath();
         segCtx.arc(sx2, sy2, 6, 0, 2 * Math.PI);
         segCtx.fill();
+    }
+
+    // --- Question 2: y = 5x - 7 ---
+    const lineCanvas = document.getElementById('lineGraph');
+    if (lineCanvas) {
+        const ctx = lineCanvas.getContext('2d');
+        drawAxesAndTicks(ctx, toCanvasCoords);
+        // Find two points on y = 5x - 7 within x in [-10, 10]
+        let x1 = -10, x2 = 10;
+        let y1 = 5 * x1 - 7;
+        let y2 = 5 * x2 - 7;
+        // Clip y to [-10, 10] if needed
+        if (y1 < -10) { y1 = -10; x1 = (y1 + 7) / 5; }
+        else if (y1 > 10) { y1 = 10; x1 = (y1 + 7) / 5; }
+        if (y2 < -10) { y2 = -10; x2 = (y2 + 7) / 5; }
+        else if (y2 > 10) { y2 = 10; x2 = (y2 + 7) / 5; }
+        const [cx1, cy1] = toCanvasCoords(x1, y1);
+        const [cx2, cy2] = toCanvasCoords(x2, y2);
+        ctx.strokeStyle = '#0074D9';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cx1, cy1);
+        ctx.lineTo(cx2, cy2);
+        ctx.stroke();
+        drawArrow(ctx, cx2, cy2, cx1, cy1);
+        drawArrow(ctx, cx1, cy1, cx2, cy2);
     }
     // Draw axes and ticks for a given context and coordinate function
     function drawAxesAndTicks(ctx, toCanvasCoords) {

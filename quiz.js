@@ -253,7 +253,7 @@ window.onload = function() {
     const submitBtn = document.getElementById('submitBtn');
     const gradeBox = document.getElementById('gradeBox');
     submitBtn.onclick = function() {
-        let total = 3;
+        let total = 5;
         let correct = 0;
         // Question 1
         const answer1 = document.querySelector('input[name="q1"]:checked');
@@ -297,6 +297,51 @@ window.onload = function() {
         }
         resultBox3.classList.remove('hidden');
         solutionBox3.classList.remove('hidden');
+        // Question 4: yes/no (2,9) on y=3x+4
+        const answer4 = document.querySelector('input[name="q4"]:checked');
+        const resultBox4 = document.getElementById('resultBox4');
+        const solutionBox4 = document.getElementById('solutionBox4');
+        if (answer4 && answer4.value === 'no') {
+            correct++;
+            resultBox4.textContent = 'Correct!';
+            resultBox4.style.color = 'green';
+        } else {
+            resultBox4.textContent = 'Incorrect.';
+            resultBox4.style.color = 'red';
+        }
+        resultBox4.classList.remove('hidden');
+        solutionBox4.classList.remove('hidden');
+        // Question 5: slope input (accept 1/13 or 0.0769)
+        const input5 = document.getElementById('q5input');
+        const resultBox5 = document.getElementById('resultBox5');
+        const solutionBox5 = document.getElementById('solutionBox5');
+        let val5 = input5 ? input5.value.trim() : '';
+        let correct5 = false;
+        if (val5) {
+            // Accept 1/13, 1 : 13, 0.0769, 0.077, .0769, .077
+            if (val5 === '1/13' || val5 === '1 : 13') correct5 = true;
+            else {
+                let num = null;
+                if (/^\d+\s*\/\s*\d+$/.test(val5)) {
+                    // Fraction
+                    let parts = val5.split('/');
+                    num = parseFloat(parts[0]) / parseFloat(parts[1]);
+                } else {
+                    num = parseFloat(val5);
+                }
+                if (Math.abs(num - (1/13)) < 0.001) correct5 = true;
+            }
+        }
+        if (correct5) {
+            correct++;
+            resultBox5.textContent = 'Correct!';
+            resultBox5.style.color = 'green';
+        } else {
+            resultBox5.textContent = 'Incorrect.';
+            resultBox5.style.color = 'red';
+        }
+        resultBox5.classList.remove('hidden');
+        solutionBox5.classList.remove('hidden');
         submitBtn.disabled = true;
         // Show overall grade
         gradeBox.textContent = `Score: ${correct} / ${total}`;

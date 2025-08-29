@@ -1,3 +1,5 @@
+    <!-- Question 5 moved below -->
+    <!-- Question 4 moved below -->
         <div class="question-block">
             <div style="font-weight:bold; margin-bottom:6px;">Question 1</div>
             <canvas id="segmentGraph" width="400" height="300"></canvas>
@@ -60,6 +62,31 @@
                 <hr>
                 <strong>Solution:</strong>
                 <div>The correct location is <b>(2, -7)</b>. The dot should be placed at this point on the graph.</div>
+            </div>
+        </div>
+        <div class="question-block">
+            <div style="font-weight:bold; margin-bottom:6px;">Question 4</div>
+            <div class="question" id="questionText4">Does the point (2, 9) exist on the line y = 3x + 4?</div>
+            <div class="choices">
+                <label><input type="radio" name="q4" value="yes"> Yes</label>
+                <label><input type="radio" name="q4" value="no"> No</label>
+            </div>
+            <div class="result hidden" id="resultBox4"></div>
+            <div class="solution hidden" id="solutionBox4">
+                <hr>
+                <strong>Solution:</strong>
+                <div>Plug x = 2 into y = 3x + 4: y = 3(2) + 4 = 10. So (2, 9) is <b>not</b> on the line.</div>
+            </div>
+        </div>
+        <div class="question-block">
+            <div style="font-weight:bold; margin-bottom:6px;">Question 5</div>
+            <div class="question" id="questionText5">What is the slope of the line between the points (6, 9) and (-7, 8)?</div>
+            <input type="text" id="q5input" name="q5" placeholder="Type your answer (e.g. 1/13 or 0.0769)">
+            <div class="result hidden" id="resultBox5"></div>
+            <div class="solution hidden" id="solutionBox5">
+                <hr>
+                <strong>Solution:</strong>
+                <div>The slope is <b>1/13</b> or approximately <b>0.0769</b> (since (9-8)/(6-(-7)) = 1/13).</div>
             </div>
         </div>
         <button type="button" id="submitBtn">Submit Quiz</button>

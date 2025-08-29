@@ -1,5 +1,28 @@
 // quiz.js
 window.onload = function() {
+    // --- Question 3: Line segment (2,6) to (3,9) ---
+    const segmentCanvas = document.getElementById('segmentGraph');
+    if (segmentCanvas) {
+        const segCtx = segmentCanvas.getContext('2d');
+        drawAxesAndTicks(segCtx, toCanvasCoords);
+        // Draw the segment
+        const [sx1, sy1] = toCanvasCoords(2, 6);
+        const [sx2, sy2] = toCanvasCoords(3, 9);
+        segCtx.strokeStyle = '#2ECC40';
+        segCtx.lineWidth = 3;
+        segCtx.beginPath();
+        segCtx.moveTo(sx1, sy1);
+        segCtx.lineTo(sx2, sy2);
+        segCtx.stroke();
+        // Draw points
+        segCtx.fillStyle = '#FF4136';
+        segCtx.beginPath();
+        segCtx.arc(sx1, sy1, 6, 0, 2 * Math.PI);
+        segCtx.fill();
+        segCtx.beginPath();
+        segCtx.arc(sx2, sy2, 6, 0, 2 * Math.PI);
+        segCtx.fill();
+    }
     // Draw axes and ticks for a given context and coordinate function
     function drawAxesAndTicks(ctx, toCanvasCoords) {
         ctx.strokeStyle = '#888';
@@ -230,7 +253,7 @@ window.onload = function() {
     const submitBtn = document.getElementById('submitBtn');
     const gradeBox = document.getElementById('gradeBox');
     submitBtn.onclick = function() {
-        let total = 2;
+        let total = 3;
         let correct = 0;
         // Question 1
         const answer1 = document.querySelector('input[name="q1"]:checked');
@@ -260,6 +283,20 @@ window.onload = function() {
         }
         resultBox2.classList.remove('hidden');
         solutionBox2.classList.remove('hidden');
+        // Question 3: slope multiple choice
+        const answer3 = document.querySelector('input[name="q3"]:checked');
+        const resultBox3 = document.getElementById('resultBox3');
+        const solutionBox3 = document.getElementById('solutionBox3');
+        if (answer3 && answer3.value === '3/1') {
+            correct++;
+            resultBox3.textContent = 'Correct!';
+            resultBox3.style.color = 'green';
+        } else {
+            resultBox3.textContent = 'Incorrect.';
+            resultBox3.style.color = 'red';
+        }
+        resultBox3.classList.remove('hidden');
+        solutionBox3.classList.remove('hidden');
         submitBtn.disabled = true;
         // Show overall grade
         gradeBox.textContent = `Score: ${correct} / ${total}`;

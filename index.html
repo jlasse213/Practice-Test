@@ -17,23 +17,33 @@
 </head>
 <body>
     <div class="quiz-container">
-        <canvas id="lineGraph" width="400" height="300"></canvas>
-        <div class="question" id="questionText">What is the slope of the line shown?</div>
-        <form id="quizForm">
+        <div class="question-block">
+            <canvas id="lineGraph" width="400" height="300"></canvas>
+            <div class="question" id="questionText1">What is the slope of the line shown?</div>
             <div class="choices">
                 <label><input type="radio" name="q1" value="positive"> Positive</label>
                 <label><input type="radio" name="q1" value="negative"> Negative</label>
                 <label><input type="radio" name="q1" value="zero"> 0</label>
                 <label><input type="radio" name="q1" value="undefined"> Undefined</label>
             </div>
-            <button type="button" id="submitBtn">Submit Quiz</button>
-        </form>
-        <div class="result hidden" id="resultBox"></div>
-        <div class="solution hidden" id="solutionBox">
-            <hr>
-            <strong>Solution:</strong>
-            <div>The line shown has a <b>positive</b> slope because it rises as it moves from left to right.</div>
+            <div class="result hidden" id="resultBox1"></div>
+            <div class="solution hidden" id="solutionBox1">
+                <hr>
+                <strong>Solution:</strong>
+                <div>The line shown has a <b>positive</b> slope because it rises as it moves from left to right.</div>
+            </div>
         </div>
+        <div class="question-block">
+            <canvas id="dotGraph" width="400" height="300" style="touch-action:none;"></canvas>
+            <div class="question" id="questionText2">Drag the dot to the point (2, -7).</div>
+            <div class="result hidden" id="resultBox2"></div>
+            <div class="solution hidden" id="solutionBox2">
+                <hr>
+                <strong>Solution:</strong>
+                <div>The correct location is <b>(2, -7)</b>. The dot should be placed at this point on the graph.</div>
+            </div>
+        </div>
+        <button type="button" id="submitBtn">Submit Quiz</button>
         <div class="result hidden" id="gradeBox" style="margin-top: 16px;"></div>
     <script src="quiz.js"></script>
 </body>

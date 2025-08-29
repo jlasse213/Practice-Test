@@ -1,5 +1,111 @@
 // quiz.js
 window.onload = function() {
+    // Draw axes and ticks for a given context and coordinate function
+    function drawAxesAndTicks(ctx, toCanvasCoords) {
+        ctx.strokeStyle = '#888';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        // x-axis (centered)
+        ctx.moveTo(40, 150); ctx.lineTo(360, 150);
+        // y-axis (centered)
+        ctx.moveTo(200, 40); ctx.lineTo(200, 260);
+        ctx.stroke();
+        for (let i = -10; i <= 10; i++) {
+            // X axis ticks
+            let [tx, ty] = toCanvasCoords(i, 0);
+            ctx.beginPath();
+            ctx.moveTo(tx, 146); ctx.lineTo(tx, 154);
+            ctx.stroke();
+            // Y axis ticks
+            [tx, ty] = toCanvasCoords(0, i);
+            ctx.beginPath();
+            ctx.moveTo(196, ty); ctx.lineTo(204, ty);
+            ctx.stroke();
+        }
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#444';
+        ctx.fillText('x', 355, 140);
+        ctx.fillText('y', 210, 50);
+    }
+    // --- Question 2: Draggable dot setup ---
+    const dotCanvas = document.getElementById('dotGraph');
+    let dot = { x: 0, y: 0 };
+    let dragging = false;
+    if (dotCanvas) {
+        const dotCtx = dotCanvas.getContext('2d');
+        drawAxesAndTicks(dotCtx, toCanvasCoords);
+        function drawDot() {
+            dotCtx.clearRect(0, 0, dotCanvas.width, dotCanvas.height);
+            drawAxesAndTicks(dotCtx, toCanvasCoords);
+            const [cx, cy] = toCanvasCoords(dot.x, dot.y);
+            dotCtx.beginPath();
+            dotCtx.arc(cx, cy, 9, 0, 2 * Math.PI);
+            dotCtx.fillStyle = '#FF851B';
+            dotCtx.fill();
+            dotCtx.strokeStyle = '#333';
+            dotCtx.lineWidth = 2;
+            dotCtx.stroke();
+        }
+        drawDot();
+        function getMousePos(evt) {
+            const rect = dotCanvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+        function getTouchPos(evt) {
+            const rect = dotCanvas.getBoundingClientRect();
+            const touch = evt.touches[0];
+            return {
+                x: touch.clientX - rect.left,
+                y: touch.clientY - rect.top
+            };
+        }
+        function canvasToGraphCoords(cx, cy) {
+            const x = ((cx - 40) / 320) * 20 - 10;
+            const y = -((cy - 150) / 110) * 10;
+            return { x, y };
+        }
+        function isOnDot(mx, my) {
+            const [cx, cy] = toCanvasCoords(dot.x, dot.y);
+            return Math.hypot(mx - cx, my - cy) < 15;
+        }
+        dotCanvas.addEventListener('mousedown', function(e) {
+            const pos = getMousePos(e);
+            if (isOnDot(pos.x, pos.y)) dragging = true;
+        });
+        dotCanvas.addEventListener('mousemove', function(e) {
+            if (dragging) {
+                const pos = getMousePos(e);
+                const g = canvasToGraphCoords(pos.x, pos.y);
+                dot.x = Math.max(-10, Math.min(10, g.x));
+                dot.y = Math.max(-10, Math.min(10, g.y));
+                drawDot();
+            }
+        });
+        dotCanvas.addEventListener('mouseup', function() { dragging = false; });
+        dotCanvas.addEventListener('mouseleave', function() { dragging = false; });
+        // Touch events for mobile
+        dotCanvas.addEventListener('touchstart', function(e) {
+            const pos = getTouchPos(e);
+            if (isOnDot(pos.x, pos.y)) dragging = true;
+        });
+        dotCanvas.addEventListener('touchmove', function(e) {
+            if (dragging) {
+                const pos = getTouchPos(e);
+                const g = canvasToGraphCoords(pos.x, pos.y);
+                dot.x = Math.max(-10, Math.min(10, g.x));
+                dot.y = Math.max(-10, Math.min(10, g.y));
+                drawDot();
+            }
+            e.preventDefault();
+        }, { passive: false });
+        dotCanvas.addEventListener('touchend', function() { dragging = false; });
+        // Expose dot for grading
+        window.getDotPosition = function() { return { x: dot.x, y: dot.y }; };
+    }
+
     // Draw the line y = 2x + 5 on the canvas (without showing the equation)
     const canvas = document.getElementById('lineGraph');
     const ctx = canvas.getContext('2d');
@@ -120,29 +226,43 @@ window.onload = function() {
     drawArrow(ctx, cx2, cy2, cx1, cy1); // Arrow at (cx1, cy1)
     drawArrow(ctx, cx1, cy1, cx2, cy2); // Arrow at (cx2, cy2)
 
-    // Quiz logic
-    const form = document.getElementById('quizForm');
+    // Quiz logic (multi-question)
     const submitBtn = document.getElementById('submitBtn');
-    const resultBox = document.getElementById('resultBox');
-    const solutionBox = document.getElementById('solutionBox');
-
+    const gradeBox = document.getElementById('gradeBox');
     submitBtn.onclick = function() {
-        const answer = form.q1.value;
-        if (!answer) {
-            resultBox.textContent = 'Please select an answer.';
-            resultBox.classList.remove('hidden');
-            solutionBox.classList.add('hidden');
-            return;
-        }
-        if (answer === 'positive') {
-            resultBox.textContent = 'Correct!';
-            resultBox.style.color = 'green';
+        let total = 2;
+        let correct = 0;
+        // Question 1
+        const answer1 = document.querySelector('input[name="q1"]:checked');
+        const resultBox1 = document.getElementById('resultBox1');
+        const solutionBox1 = document.getElementById('solutionBox1');
+        if (answer1 && answer1.value === 'positive') {
+            correct++;
+            resultBox1.textContent = 'Correct!';
+            resultBox1.style.color = 'green';
         } else {
-            resultBox.textContent = 'Incorrect.';
-            resultBox.style.color = 'red';
+            resultBox1.textContent = 'Incorrect.';
+            resultBox1.style.color = 'red';
         }
-        resultBox.classList.remove('hidden');
-        solutionBox.classList.remove('hidden');
+        resultBox1.classList.remove('hidden');
+        solutionBox1.classList.remove('hidden');
+        // Question 2: check dot position
+        const resultBox2 = document.getElementById('resultBox2');
+        const solutionBox2 = document.getElementById('solutionBox2');
+        let dotPos = window.getDotPosition ? window.getDotPosition() : {x: null, y: null};
+        if (dotPos && Math.abs(dotPos.x - 2) < 0.5 && Math.abs(dotPos.y + 7) < 0.5) {
+            correct++;
+            resultBox2.textContent = 'Correct!';
+            resultBox2.style.color = 'green';
+        } else {
+            resultBox2.textContent = 'Incorrect.';
+            resultBox2.style.color = 'red';
+        }
+        resultBox2.classList.remove('hidden');
+        solutionBox2.classList.remove('hidden');
         submitBtn.disabled = true;
+        // Show overall grade
+        gradeBox.textContent = `Score: ${correct} / ${total}`;
+        gradeBox.classList.remove('hidden');
     };
 };
